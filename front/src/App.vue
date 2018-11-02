@@ -1,28 +1,21 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-
-    <FilmThumbnail />
-
-    <br/>
-    <h1>RESULT</h1>
+    <h1>Filmotron3000</h1>
+    <SearchBar />
     <QueryResult />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
-import FilmThumbnail from "./components/FilmThumbnail.vue";
 import QueryResult from "./components/QueryResult.vue";
+import SearchBar from "./components/SearchBar.vue";
 
 export default Vue.extend({
   name: "app",
   components: {
-    HelloWorld,
-    FilmThumbnail,
-    QueryResult
+    QueryResult,
+    SearchBar
   }
 });
 </script>
@@ -34,6 +27,15 @@ export default Vue.extend({
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+
+  h1 {
+    text-align: left;
+    margin-left: 100px;
+    padding: 30px;
+  }
+
+  form {
+    margin-bottom: 30px;
+  }
 }
 </style>
