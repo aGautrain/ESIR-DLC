@@ -10,12 +10,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js"></script>
   </head>
   <body>
     <noscript>
       <strong>We're sorry but project doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
+
     <div id="app"></div>
     <!-- built files will be auto injected -->
+
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyDLiGoWKXICKYqhB2t6bycHOiqvhOdmvkg",
+        authDomain: "filmotron3000-2ae2c.firebaseapp.com",
+        databaseURL: "https://filmotron3000-2ae2c.firebaseio.com",
+        projectId: "filmotron3000-2ae2c",
+        storageBucket: "filmotron3000-2ae2c.appspot.com",
+        messagingSenderId: "111337544568"
+      };
+      firebase.initializeApp(config);
+    </script>
   </body>
 </html>

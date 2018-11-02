@@ -1,7 +1,6 @@
 # ESIR-DLC
 
-Front initialized with Vue CLI.  
-`> vue create front`
+Front initialized with Vue CLI.
 
 Presets used :
 TypeScript, ESlint, Unit tests (Mocha), CSS preprocessor (SASS)
