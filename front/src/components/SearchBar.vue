@@ -24,6 +24,9 @@ export default Vue.extend({
     filterResults: function(): void {
       this.$emit("filter-request", 3);
     }
+  },
+  created: function() {
+    this.filterResults();
   }
 });
 </script>

@@ -19,7 +19,8 @@
 <script lang="ts">
 import Vue from "vue";
 import FilmThumbnail from "./FilmThumbnail.vue";
-import { Movie } from "../interfaces/movie.interface";
+import { FilmInterface } from "../interfaces/film.interface";
+import { QueryBuilder } from "../libs/queries";
 declare var db: any; // declaring db as a global variable (TS specific)
 
 export default Vue.extend({
@@ -30,8 +31,8 @@ export default Vue.extend({
   data: function(): {
     processingQuery: boolean;
     query: string;
-    resultsFound: Movie[];
-    resultsShown: Movie[];
+    resultsFound: FilmInterface[];
+    resultsShown: FilmInterface[];
   } {
     return {
       processingQuery: false,
@@ -41,28 +42,6 @@ export default Vue.extend({
     };
   },
   methods: {
-    fetchLatestMovies: function(amount: number): Promise<any> {
-      console.log("fetching movies");
-      const latestMovies = db.collection("movies").limit(amount);
-
-      return latestMovies
-        .get()
-        .then((querySnapshot: any) => {
-          const movies: Movie[] = [];
-
-          querySnapshot.forEach(function(doc: any) {
-            console.log(doc.id, " => ", doc.data());
-            movies.push(doc.data().film);
-          });
-
-          console.log(movies);
-          return movies;
-        })
-        .catch((err: any) => {
-          console.error("Fetching latest movies ", err);
-          return [];
-        });
-    },
     queryDatabase: function(film: string) {
       this.query = film;
       this.processingQuery = true;
@@ -71,9 +50,9 @@ export default Vue.extend({
   },
   created: function() {
     console.log("Component QueryResult instanciated !");
-    this.fetchLatestMovies(20).then((movies: Movie[]) => {
-      this.resultsFound = movies;
-      this.resultsShown = movies;
+    QueryBuilder.getBestFilms(20).then((films: FilmInterface[]) => {
+      this.resultsFound = films;
+      this.resultsShown = films;
     });
   }
 });

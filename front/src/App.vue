@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <h1>Filmotron3000</h1>
-    <SearchBar />
+    <SearchBar v-on:filter-request="logEvent"/>
     <QueryResult />
   </div>
 </template>
@@ -16,6 +16,11 @@ export default Vue.extend({
   components: {
     QueryResult,
     SearchBar
+  },
+  methods: {
+    logEvent: function(e) {
+      console.log(e);
+    }
   }
 });
 </script>

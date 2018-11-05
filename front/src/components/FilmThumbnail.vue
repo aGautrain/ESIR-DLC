@@ -1,9 +1,18 @@
 <template>
 <div class="card-container">
     <div class="card">
-      <img class="card-img-top" v-bind:src="posterImage" alt="Movie thumbnail">
+      <template v-if="posterImage">
+        <img class="card-img-top" v-bind:src="posterImage" alt="Movie thumbnail">
+      </template>
       <div class="card-body">
-        <h5 class="card-title">{{ title }}</h5>
+
+        <h1 v-if="titleSize === 1" class="card-title">{{ title }}</h1>
+        <h2 v-else-if="titleSize === 2" class="card-title">{{ title }}</h2>
+        <h3 v-else-if="titleSize === 3" class="card-title">{{ title }}</h3>
+        <h4 v-else-if="titleSize === 4" class="card-title">{{ title }}</h4>
+        <h5 v-else-if="titleSize === 5" class="card-title">{{ title }}</h5>
+        <h6 v-else class="card-title">{{ title }}</h6>
+
         <p class="card-text">{{ movieDescription }}</p>
       </div>
 
@@ -42,6 +51,24 @@ export default Vue.extend({
     },
     movieDescription: function(): string {
       return (this.overview as string).slice(0, 400).trim() + "...";
+    },
+    titleSize: function(): number {
+      const length: number = (this.title as string).length;
+      let size: number = 0;
+      if (length < 4) {
+        size = 1;
+      } else if (length < 8) {
+        size = 2;
+      } else if (length < 12) {
+        size = 3;
+      } else if (length < 16) {
+        size = 4;
+      } else if (length < 24) {
+        size = 5;
+      } else {
+        size = 6;
+      }
+      return size;
     }
   }
 });
@@ -55,10 +82,12 @@ export default Vue.extend({
   .card {
     height: 200px;
     overflow: hidden;
+    border-radius: 0px;
 
     .card-img-top {
       position: relative;
       top: 0px;
+      border-radius: 0px;
     }
 
     .card-text {
