@@ -13,11 +13,16 @@
         <h5 v-else-if="titleSize === 5" class="card-title">{{ title }}</h5>
         <h6 v-else class="card-title">{{ title }}</h6>
 
-        <p class="card-text">{{ movieDescription }}</p>
+        <p class="card-text card-description">{{ movieDescription }}</p>
       </div>
+
+
 
       <div class="card-zoom">
       </div>
+    </div>
+    <div class="genres-badges">
+      <span v-for="genre in mainGenres" v-bind:key="genre" class="badge badge-light">{{genre}}</span>
     </div>
 </div>
 </template>
@@ -43,7 +48,8 @@ export default Vue.extend({
     title: String,
     video: Boolean,
     vote_average: Number,
-    vote_count: Number
+    vote_count: Number,
+    filmotron_genres: Array
   },
   computed: {
     posterImage: function(): string {
@@ -69,6 +75,9 @@ export default Vue.extend({
         size = 6;
       }
       return size;
+    },
+    mainGenres: function(): string[] {
+      return (this.filmotron_genres as string[]).splice(0, 2);
     }
   }
 });
@@ -77,7 +86,7 @@ export default Vue.extend({
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .card-container {
-  padding: 10px;
+  padding: 20px 10px;
 
   .card {
     height: 200px;
@@ -90,7 +99,7 @@ export default Vue.extend({
       border-radius: 0px;
     }
 
-    .card-text {
+    .card-description {
       font-size: 60%;
       display: none;
       text-align: justify;
@@ -110,21 +119,39 @@ export default Vue.extend({
       );
     }
   }
+
+  .genres-badges {
+    position: absolute;
+    left: 0px;
+    width: 100%;
+    display: none;
+    text-align: right;
+
+    .badge {
+      margin: 2px;
+    }
+  }
 }
 
-.card:hover {
-  cursor: pointer;
-  .card-img-top {
-    display: none;
+.card-container:hover {
+  .card:hover {
+    cursor: pointer;
+    .card-img-top {
+      display: none;
+    }
+    .card-title {
+      border-bottom: solid lightgray 1px;
+      padding-bottom: 10px;
+    }
+    .card-description {
+      display: block;
+    }
+    .card-zoom {
+      display: block;
+    }
   }
-  .card-title {
-    border-bottom: solid lightgray 1px;
-    padding-bottom: 10px;
-  }
-  .card-text {
-    display: block;
-  }
-  .card-zoom {
+
+  .genres-badges {
     display: block;
   }
 }

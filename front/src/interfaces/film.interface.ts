@@ -13,4 +13,7 @@ export interface FilmInterface {
   video: boolean;
   vote_average: number;
   vote_count: number;
+
+  // custom attributes must be prefixed with filmotron_
+  filmotron_genres: string[];
 }
