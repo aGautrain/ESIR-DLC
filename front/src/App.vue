@@ -2,6 +2,9 @@
   <div id="app">
     <h1>Filmotron3000</h1>
     <SearchBar v-on:filter-name-request="fetchFilms" v-on:filter-genre-request="filterGenres"/>
+
+    <!-- FEATURE #1: Homepage showing a fullscreen carousel with latest films -->
+    <!--<CustomCarousel v-bind:results="filmsExposed" />-->
     <QueryResult v-bind:results="filmsExposed" />
 
     <Paginator v-if="canLoadMore && !processing" v-on:load-more="fetchNext" />
@@ -14,6 +17,8 @@
 
 <script lang="ts">
 import Vue from "vue";
+
+// import CustomCarousel from "./components/CustomCarousel.vue";
 import QueryResult from "./components/QueryResult.vue";
 import SearchBar from "./components/SearchBar.vue";
 import Paginator from "./components/Paginator.vue";
@@ -41,6 +46,7 @@ export default Vue.extend({
     }
   },
   components: {
+    // CustomCarousel,
     QueryResult,
     SearchBar,
     Paginator

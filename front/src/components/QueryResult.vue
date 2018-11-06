@@ -12,7 +12,6 @@
 import Vue from "vue";
 import FilmThumbnail from "./FilmThumbnail.vue";
 import { FilmInterface } from "../interfaces/film.interface";
-declare var db: any; // declaring db as a global variable (TS specific)
 
 export default Vue.extend({
   name: "QueryResult",

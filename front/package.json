@@ -9,7 +9,8 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "vue": "^2.5.17"
+    "vue": "^2.5.17",
+    "vue-carousel": "^0.16.0-rc2"
   },
   "devDependencies": {
     "@types/chai": "^4.1.0",
