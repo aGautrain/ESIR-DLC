@@ -4,7 +4,7 @@
     <SearchBar v-on:filter-name-request="fetchFilms" v-on:filter-genre-request="filterGenres"/>
     <QueryResult v-bind:results="filmsExposed" />
 
-    <Paginator v-if="mustPaginate" />
+    <Paginator v-if="canLoadMore && !processing" v-on:load-more="fetchNext" />
 
     <div v-if="processing" class="loading">
       <i class="fas fa-spinner fa-spin fa-2x"></i>
@@ -36,8 +36,8 @@ export default Vue.extend({
     };
   },
   computed: {
-    mustPaginate: function() {
-      return this.films.length > 10; // TODO store pagination variables in a separate file
+    canLoadMore: function(): boolean {
+      return QueryBuilder.lastQuery !== undefined;
     }
   },
   components: {
@@ -57,7 +57,11 @@ export default Vue.extend({
             );
           }
           this.films = films;
-          this.filmsExposed = films;
+          // Avoiding array reference assignment
+          this.filmsExposed = [];
+          for (let j: number = 0; j < this.films.length; j++) {
+            this.filmsExposed.push(this.films[j]);
+          }
           this.processing = false;
         });
       } else {
@@ -68,7 +72,26 @@ export default Vue.extend({
             );
           }
           this.films = films;
-          this.filmsExposed = films;
+          // Avoiding array reference assignment
+          this.filmsExposed = [];
+          for (let j: number = 0; j < this.films.length; j++) {
+            this.filmsExposed.push(this.films[j]);
+          }
+          this.processing = false;
+        });
+      }
+    },
+    fetchNext: function(e: any): void {
+      if (QueryBuilder.lastQuery) {
+        this.processing = true;
+        QueryBuilder.getNextResults().then((films: FilmInterface[]) => {
+          for (let i: number = 0; i < films.length; i++) {
+            films[i].filmotron_genres = GenreFinder.getGenresFromIds(
+              films[i].genre_ids
+            );
+            this.films.push(films[i]);
+            this.filmsExposed.push(films[i]);
+          }
           this.processing = false;
         });
       }
@@ -85,7 +108,11 @@ export default Vue.extend({
         });
       } else {
         // Showing all films
-        this.filmsExposed = this.films;
+        this.filmsExposed = [];
+        // Avoiding array reference assignment
+        for (let i: number = 0; i < this.films.length; i++) {
+          this.filmsExposed.push(this.films[i]);
+        }
       }
     }
   },

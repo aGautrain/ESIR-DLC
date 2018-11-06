@@ -61,9 +61,7 @@ export default Vue.extend({
     titleSize: function(): number {
       const length: number = (this.title as string).length;
       let size: number = 0;
-      if (length < 4) {
-        size = 1;
-      } else if (length < 8) {
+      if (length < 8) {
         size = 2;
       } else if (length < 12) {
         size = 3;

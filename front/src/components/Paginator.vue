@@ -1,22 +1,6 @@
 <template>
-  <nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center">
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-          <span class="sr-only">Previous</span>
-        </a>
-      </li>
-      <li class="page-item"><a class="page-link" href="#" disabled>1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
-          <span class="sr-only">Next</span>
-        </a>
-      </li>
-    </ul>
+  <nav>
+    <button class="btn btn-secondary" v-on:click="loadMore">VOIR PLUS</button>
   </nav>
 </template>
 
@@ -25,11 +9,10 @@ import Vue from "vue";
 
 export default Vue.extend({
   name: "Paginator",
-  data: function(): { currentPage: number; pages: number[] } {
-    return {
-      currentPage: 1,
-      pages: [1]
-    };
+  methods: {
+    loadMore: function(): void {
+      this.$emit("load-more", true);
+    }
   }
 });
 </script>
@@ -38,5 +21,10 @@ export default Vue.extend({
 <style scoped lang="scss">
 nav {
   margin-top: 20px;
+
+  button {
+    border-radius: 0px;
+    width: 20%;
+  }
 }
 </style>
