@@ -1,6 +1,6 @@
 <template>
 <div class="card-container">
-    <div class="card">
+    <div class="card" v-on:click="clickThumbnail">
       <template v-if="posterImage">
         <img class="card-img-top" v-bind:src="posterImage" alt="Movie thumbnail">
       </template>
@@ -15,14 +15,11 @@
 
         <p class="card-text card-description">{{ movieDescription }}</p>
       </div>
-
-
-
       <div class="card-zoom">
       </div>
     </div>
     <div class="genres-badges">
-      <span v-for="genre in mainGenres" v-bind:key="genre" class="badge badge-light">{{genre}}</span>
+      <span v-for="genre in mainGenres" v-bind:key="id + '_' + genre" class="badge badge-light">{{genre}}</span>
     </div>
 </div>
 </template>
@@ -51,6 +48,12 @@ export default Vue.extend({
     vote_count: Number,
     filmotron_genres: Array
   },
+  methods: {
+    clickThumbnail: function(): void {
+      console.log("sending ", this.$props);
+      this.$emit("thumbnail-click", this.$props);
+    }
+  },
   computed: {
     posterImage: function(): string {
       return apiPosterEndpoint + this.backdrop_path;
@@ -75,7 +78,7 @@ export default Vue.extend({
       return size;
     },
     mainGenres: function(): string[] {
-      return (this.filmotron_genres as string[]).splice(0, 2);
+      return (this.filmotron_genres as string[]).splice(0, 1);
     }
   }
 });

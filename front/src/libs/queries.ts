@@ -44,6 +44,33 @@ export class QueryBuilder {
       });
   }
 
+  static getAllFilms(): Promise<FilmInterface[]> {
+    const film = db.collection("films");
+
+    QueryBuilder.lastQuery = {
+      sourceQuery: film
+    };
+
+    return film
+      .get()
+      .then((querySnapshot: any) => {
+        const films: FilmInterface[] = [];
+
+        querySnapshot.forEach(function(doc: any) {
+          films.push(doc.data());
+        });
+
+        QueryBuilder.lastQuery.lastDoc =
+          querySnapshot.docs[querySnapshot.docs.length - 1];
+
+        return films;
+      })
+      .catch((err: any) => {
+        QueryBuilder.lastQuery.success = false;
+        return [];
+      });
+  }
+
   static getFilm(name: string): Promise<FilmInterface[]> {
     const film = db.collection("films").where("title", "==", name);
 

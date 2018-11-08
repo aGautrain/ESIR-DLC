@@ -1,17 +1,21 @@
 <template>
   <div id="app">
     <h1>Filmotron3000</h1>
-    <SearchBar v-on:filter-name-request="fetchFilms" v-on:filter-genre-request="filterGenres"/>
+    <SearchBar v-on:filter-name-request="fetchFilms" v-on:filter-genre-request="filterGenres" v-bind:titles="filmsTitles" />
 
     <!-- FEATURE #1: Homepage showing a fullscreen carousel with latest films -->
     <!--<CustomCarousel v-bind:results="filmsExposed" />-->
-    <QueryResult v-bind:results="filmsExposed" />
+    <QueryResult v-bind:results="filmsExposed" v-on:thumbnail-click="selectFilm" />
 
     <Paginator v-if="canLoadMore && !processing" v-on:load-more="fetchNext" />
 
     <div v-if="processing" class="loading">
       <i class="fas fa-spinner fa-spin fa-2x"></i>
     </div>
+
+    <FilmSheet v-if="filmSelected" id="film-sheet" v-bind="filmSelected" />
+
+    <div v-if="filmSelected" v-on:click="unselect" id="app-overlay"></div>
   </div>
 </template>
 
@@ -19,6 +23,7 @@
 import Vue from "vue";
 
 // import CustomCarousel from "./components/CustomCarousel.vue";
+import FilmSheet from "./components/FilmSheet.vue";
 import QueryResult from "./components/QueryResult.vue";
 import SearchBar from "./components/SearchBar.vue";
 import Paginator from "./components/Paginator.vue";
@@ -30,13 +35,17 @@ import { GenreFinder } from "./libs/genres";
 export default Vue.extend({
   name: "app",
   data: function(): {
+    filmSelected: FilmInterface | null;
     films: FilmInterface[];
     filmsExposed: FilmInterface[];
+    filmsTitles: Array<{ id: string; title: string }>;
     processing: boolean;
   } {
     return {
+      filmSelected: null,
       films: [],
       filmsExposed: [],
+      filmsTitles: [],
       processing: false
     };
   },
@@ -47,11 +56,51 @@ export default Vue.extend({
   },
   components: {
     // CustomCarousel,
+    FilmSheet,
     QueryResult,
     SearchBar,
     Paginator
   },
   methods: {
+    fetchTitles: function(): Promise<string> {
+      if (localStorage.getItem("film_titles") !== null) {
+        const storage_titles: string = localStorage.getItem(
+          "film_titles"
+        ) as string;
+        // Typescript bug, not deducing it can't be a null value
+        this.filmsTitles = JSON.parse(storage_titles) as Array<{
+          id: string;
+          title: string;
+        }>;
+
+        return new Promise((resolve, reject) => {
+          resolve("cache");
+        });
+      } else {
+        return QueryBuilder.getAllFilms().then((films: FilmInterface[]) => {
+          const items: Array<{ id: string; title: string }> = films.reduce(
+            (
+              accumulator: Array<{ id: string; title: string }>,
+              record: FilmInterface
+            ) => {
+              return [
+                ...accumulator,
+                {
+                  id: record.id,
+                  title: record.title
+                }
+              ];
+            },
+            []
+          );
+
+          localStorage.setItem("film_titles", JSON.stringify(items));
+          this.filmsTitles = items;
+
+          return "server";
+        });
+      }
+    },
     fetchFilms: function(query: string): void {
       this.processing = true;
       if (query) {
@@ -120,10 +169,17 @@ export default Vue.extend({
           this.filmsExposed.push(this.films[i]);
         }
       }
+    },
+    selectFilm: function(film: FilmInterface): void {
+      this.filmSelected = film;
+    },
+    unselect: function(): void {
+      this.filmSelected = null;
     }
   },
   created: function() {
     this.fetchFilms("");
+    this.fetchTitles();
   }
 });
 </script>
@@ -150,6 +206,24 @@ export default Vue.extend({
     position: fixed;
     bottom: 10px;
     right: 20px;
+  }
+
+  .film-sheet-container {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    width: 600px;
+    height: 100%;
+  }
+
+  #app-overlay {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0.7);
   }
 }
 </style>

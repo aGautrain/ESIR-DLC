@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form class="query-filter form-inline">
+    <!--<form class="query-filter form-inline">
       <input v-model="filter" type="text" class="form-control" placeholder="Look for a specific film.." />
       <button v-on:click="filterResults" type="button" class="btn btn-primary">SEARCH</button>
     </form>
@@ -12,7 +12,12 @@
             v-on:click="clickGenreBadge(key)">
         {{val}}
       </span>
-    </div>
+    </div>-->
+
+    <v-autocomplete :items="items" v-model="item" :get-label="getLabel" :component-item='template' @update-items="updateItems">
+    </v-autocomplete>
+
+    <p>{{ item }}</p>
   </div>
 </template>
 
@@ -20,20 +25,60 @@
 import Vue from "vue";
 import { GenreFinder } from "../libs/genres";
 
+import SearchBarItem from "./SearchBarItem.vue";
+
+import Autocomplete from "v-autocomplete";
+
 export default Vue.extend({
   name: "SearchBar",
+  components: {
+    // eslint-disable-next-line
+    "v-autocomplete": Autocomplete
+  },
+  props: {
+    titles: Array
+  },
   data: function(): {
     filter: string;
     genres: { [key: number]: string };
     genresFilter: number[];
+    template: any;
+    item: { id: string; title: string } | null;
+    items: Array<{ id: string; title: string }>;
   } {
     return {
       filter: "",
       genres: GenreFinder.idToGenre,
-      genresFilter: []
+      genresFilter: [],
+      template: SearchBarItem,
+      item: null,
+      items: []
     };
   },
   methods: {
+    // Autocomplete
+    getLabel: function(item: { id: string; title: string }): string {
+      if (item) {
+        return item.title;
+      } else {
+        return "";
+      }
+    },
+    updateItems: function(text: string) {
+      if (text.length > 0) {
+        this.items = (this.titles as Array<{
+          id: string;
+          title: string;
+        }>).filter((item: { id: string; title: string }) => {
+          if (item.title.length > 0) {
+            return item.title.toLowerCase().includes(text.toLowerCase());
+          } else {
+            return false;
+          }
+        });
+      }
+    },
+
     filterResults: function(): void {
       console.log("Filtering films with title === ", this.filter);
       this.$emit("filter-name-request", this.filter);
@@ -51,6 +96,9 @@ export default Vue.extend({
       }
       this.$emit("filter-genre-request", this.genresFilter);
     }
+  },
+  created: function(): void {
+    // ...
   }
 });
 </script>
