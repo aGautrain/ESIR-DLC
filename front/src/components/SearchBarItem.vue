@@ -1,7 +1,6 @@
 <template>
-<div>
-  <b>id#{{item.id}}</b>
-  <p>{{item.title}}</p>
+<div class="searchbar-suggestion">
+  <p>{{ left }}<span class="text-found">{{ found }}</span>{{ right }}</p>
 </div>
 </template>
 
@@ -12,11 +11,52 @@ export default Vue.extend({
   name: "SearchBarItem",
   props: {
     item: { required: true },
-    searchText: { required: true }
+    searchText: String
+  },
+  computed: {
+    left: function(): string {
+      const title: string = (this.item as { id: string; title: string }).title;
+
+      const startIndex: number = title
+        .toLowerCase()
+        .indexOf(this.searchText.toLowerCase());
+
+      return title.substring(0, startIndex);
+    },
+    found: function(): string {
+      const title: string = (this.item as { id: string; title: string }).title;
+
+      const startIndex: number = title
+        .toLowerCase()
+        .indexOf(this.searchText.toLowerCase());
+
+      return title.substring(startIndex, startIndex + this.searchText.length);
+    },
+    right: function(): string {
+      const title: string = (this.item as { id: string; title: string }).title;
+
+      const startIndex: number = title
+        .toLowerCase()
+        .indexOf(this.searchText.toLowerCase());
+
+      return title.substring(startIndex + this.searchText.length, title.length);
+    }
   }
 });
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
+<style lang="scss">
+.searchbar-suggestion {
+  z-index: 10;
+
+  p {
+    margin-bottom: 0px;
+  }
+
+  .text-found {
+    text-decoration: underline;
+    font-weight: bold;
+  }
+}
 </style>

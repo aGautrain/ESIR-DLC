@@ -1,23 +1,17 @@
 <template>
-  <div>
-    <!--<form class="query-filter form-inline">
-      <input v-model="filter" type="text" class="form-control" placeholder="Look for a specific film.." />
-      <button v-on:click="filterResults" type="button" class="btn btn-primary">SEARCH</button>
-    </form>
+  <div class="search-bar">
+
+    <v-autocomplete :items="items" v-model="item" :get-label="getLabel" :component-item='template' @update-items="updateItems">
+    </v-autocomplete>
 
     <div class="genre-filter">
       <span v-for="(val, key) in genres"
             v-bind:key="key"
             v-bind:class="['badge', {'badge-dark': genresFilterContains(key)}, {'badge-light': !genresFilterContains(key)}]"
             v-on:click="clickGenreBadge(key)">
-        {{val}}
+        {{ val }}
       </span>
-    </div>-->
-
-    <v-autocomplete :items="items" v-model="item" :get-label="getLabel" :component-item='template' @update-items="updateItems">
-    </v-autocomplete>
-
-    <p>{{ item }}</p>
+    </div>
   </div>
 </template>
 
@@ -55,6 +49,20 @@ export default Vue.extend({
       items: []
     };
   },
+  watch: {
+    item: function(
+      nextValue: { id: string; title: string } | null,
+      oldValue: { id: string; title: string } | null
+    ): void {
+      if (nextValue && nextValue.title) {
+        this.filter = nextValue.title;
+      } else {
+        this.filter = "";
+      }
+
+      this.filterResults();
+    }
+  },
   methods: {
     // Autocomplete
     getLabel: function(item: { id: string; title: string }): string {
@@ -69,13 +77,15 @@ export default Vue.extend({
         this.items = (this.titles as Array<{
           id: string;
           title: string;
-        }>).filter((item: { id: string; title: string }) => {
-          if (item.title.length > 0) {
-            return item.title.toLowerCase().includes(text.toLowerCase());
-          } else {
-            return false;
-          }
-        });
+        }>)
+          .filter((item: { id: string; title: string }) => {
+            if (item.title.length > 0) {
+              return item.title.toLowerCase().includes(text.toLowerCase());
+            } else {
+              return false;
+            }
+          })
+          .slice(0, 5);
       }
     },
 
@@ -96,28 +106,12 @@ export default Vue.extend({
       }
       this.$emit("filter-genre-request", this.genresFilter);
     }
-  },
-  created: function(): void {
-    // ...
   }
 });
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-.query-filter {
-  width: 50%;
-  margin: auto;
-  input {
-    width: 80%;
-    border-radius: 0px;
-  }
-  button {
-    width: 20%;
-    border-radius: 0px;
-  }
-}
-
+<style lang="scss">
 .genre-filter {
   width: 65%;
   text-align: center;
@@ -127,6 +121,49 @@ export default Vue.extend({
     margin: 2px 5px;
     &:hover {
       cursor: pointer;
+    }
+  }
+}
+
+.v-autocomplete {
+  .v-autocomplete-input-group {
+    .v-autocomplete-input {
+      padding: 5px 10px;
+      box-shadow: none;
+      border: 1px solid black;
+      width: 50%;
+      margin: auto;
+      &.v-autocomplete-selected {
+        .v-autocomplete-input {
+        }
+      }
+    }
+  }
+  .v-autocomplete-list {
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    text-align: left;
+    border: none;
+    border-top: none;
+    max-height: 400px;
+    overflow-y: auto;
+    border-bottom: 1px solid lightgray;
+    margin: auto;
+    z-index: 10;
+    .v-autocomplete-list-item {
+      cursor: pointer;
+      background-color: #fff;
+      padding: 10px 20px;
+      border-bottom: 1px solid lightgray;
+      border-left: 1px solid lightgray;
+      border-right: 1px solid lightgray;
+      &:last-child {
+        border-bottom: none;
+      }
+      &:hover {
+        background-color: #eee;
+      }
     }
   }
 }
