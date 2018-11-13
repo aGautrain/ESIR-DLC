@@ -64,10 +64,7 @@ export default Vue.extend({
   },
   methods: {
     fetchTitles: function(): Promise<string> {
-      if (
-        localStorage.getItem("film_titles") !== null &&
-        localStorage.getItem("film_titles").length > 10
-      ) {
+      if (localStorage.getItem("film_titles") !== null) {
         console.log("Fetched film titles from local storage");
         const storage_titles: string = localStorage.getItem(
           "film_titles"

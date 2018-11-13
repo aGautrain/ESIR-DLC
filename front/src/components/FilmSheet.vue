@@ -58,11 +58,11 @@ export default Vue.extend({
     },
     releaseDate: function(): string {
       return (
-        this.release_date.substring(8, 10) +
+        (this.release_date as string).substring(8, 10) +
         "/" +
-        this.release_date.substring(5, 7) +
+        (this.release_date as string).substring(5, 7) +
         "/" +
-        this.release_date.substring(0, 4)
+        (this.release_date as string).substring(0, 4)
       );
     }
   }
