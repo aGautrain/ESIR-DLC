@@ -4,17 +4,17 @@
       <template v-if="posterImage">
         <img class="card-img-top" v-bind:src="posterImage" alt="Movie thumbnail">
       </template>
-      <div class="card-body">
 
+      <div class="card-body">
         <h1 v-if="titleSize === 1" class="card-title">{{ title }}</h1>
         <h2 v-else-if="titleSize === 2" class="card-title">{{ title }}</h2>
         <h3 v-else-if="titleSize === 3" class="card-title">{{ title }}</h3>
         <h4 v-else-if="titleSize === 4" class="card-title">{{ title }}</h4>
         <h5 v-else-if="titleSize === 5" class="card-title">{{ title }}</h5>
         <h6 v-else class="card-title">{{ title }}</h6>
-
         <p class="card-text card-description">{{ movieDescription }}</p>
       </div>
+
       <div class="card-zoom">
       </div>
     </div>

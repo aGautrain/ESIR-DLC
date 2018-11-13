@@ -16,6 +16,7 @@
     <FilmSheet v-if="filmSelected" id="film-sheet" v-bind="filmSelected" />
 
     <div v-if="filmSelected" v-on:click="unselect" id="app-overlay"></div>
+    <!--<img src="https://robohash.org/filmotron3000" id="app-icon" alt="" title="" />-->
   </div>
 </template>
 
@@ -63,7 +64,11 @@ export default Vue.extend({
   },
   methods: {
     fetchTitles: function(): Promise<string> {
-      if (localStorage.getItem("film_titles") !== null) {
+      if (
+        localStorage.getItem("film_titles") !== null &&
+        localStorage.getItem("film_titles").length > 10
+      ) {
+        console.log("Fetched film titles from local storage");
         const storage_titles: string = localStorage.getItem(
           "film_titles"
         ) as string;
@@ -77,6 +82,9 @@ export default Vue.extend({
           resolve("cache");
         });
       } else {
+        console.log(
+          "Fetching film titles from server as local storage is empty"
+        );
         return QueryBuilder.getAllFilms().then((films: FilmInterface[]) => {
           const items: Array<{ id: string; title: string }> = films.reduce(
             (
@@ -101,11 +109,11 @@ export default Vue.extend({
         });
       }
     },
-    fetchFilms: function(query: string): void {
+    fetchFilms: function(query: string): Promise<number> {
       this.processing = true;
       if (query) {
         // TODO: Regex on query (SAFETY)
-        QueryBuilder.getFilm(query).then((films: FilmInterface[]) => {
+        return QueryBuilder.getFilm(query).then((films: FilmInterface[]) => {
           for (let i: number = 0; i < films.length; i++) {
             films[i].filmotron_genres = GenreFinder.getGenresFromIds(
               films[i].genre_ids
@@ -118,9 +126,11 @@ export default Vue.extend({
             this.filmsExposed.push(this.films[j]);
           }
           this.processing = false;
+
+          return this.films.length;
         });
       } else {
-        QueryBuilder.getBestFilms(18).then((films: FilmInterface[]) => {
+        return QueryBuilder.getBestFilms(18).then((films: FilmInterface[]) => {
           for (let i: number = 0; i < films.length; i++) {
             films[i].filmotron_genres = GenreFinder.getGenresFromIds(
               films[i].genre_ids
@@ -133,6 +143,8 @@ export default Vue.extend({
             this.filmsExposed.push(this.films[j]);
           }
           this.processing = false;
+
+          return this.films.length;
         });
       }
     },
@@ -178,7 +190,9 @@ export default Vue.extend({
     }
   },
   created: function() {
-    this.fetchFilms("");
+    this.fetchFilms("").then(number => {
+      console.log("Number of films fetched : ", number);
+    });
     this.fetchTitles();
   }
 });
@@ -192,10 +206,21 @@ export default Vue.extend({
   text-align: center;
   color: #2c3e50;
 
+  #app-icon {
+    position: fixed;
+    transform: translateX(90deg);
+    bottom: 0px;
+    right: 0px;
+    width: 200px;
+    border-bottom: solid #2c3e50 2px;
+    z-index: 15;
+    pointer-events: none;
+  }
+
   h1 {
     text-align: left;
     margin-left: 100px;
-    padding: 30px;
+    padding: 30px 20px 0px 20px;
   }
 
   form {
@@ -210,10 +235,10 @@ export default Vue.extend({
 
   .film-sheet-container {
     position: fixed;
-    top: 0px;
-    right: 0px;
-    width: 600px;
-    height: 100%;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    max-width: 100%;
   }
 
   #app-overlay {

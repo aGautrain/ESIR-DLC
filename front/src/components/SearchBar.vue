@@ -113,12 +113,15 @@ export default Vue.extend({
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .genre-filter {
-  width: 65%;
+  width: 60%;
+  max-width: 800px;
+  min-width: 350px;
   text-align: center;
   margin: auto;
+  margin-bottom: 20px;
 
   .badge {
-    margin: 2px 5px;
+    margin: 2px 7px;
     &:hover {
       cursor: pointer;
     }
@@ -132,7 +135,9 @@ export default Vue.extend({
       box-shadow: none;
       border: 1px solid black;
       width: 50%;
-      margin: auto;
+      min-width: 200px;
+      max-width: 500px;
+      margin: 10px auto;
       &.v-autocomplete-selected {
         .v-autocomplete-input {
         }
