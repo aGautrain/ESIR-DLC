@@ -25,6 +25,7 @@ Working with Atom :
 
 We use a git webhook to notify jenkins of every commit and run a build.
 
+
 ## Understand app structure
 
 Application includes several Vue components. Each of these features :
