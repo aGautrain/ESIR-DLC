@@ -2,6 +2,7 @@ import { FilmInterface } from "../interfaces/film.interface";
 import { QueryResultInterface } from "../interfaces/query-result.interface";
 
 declare var db: any; // declaring db as a global variable (TS specific)
+declare var apiSourcePrefered: string;
 
 // ALL DATABASE CALL MUST BE IMPLEMENTED AS A STATIC FUNCTION OF QUERYBUILDER
 
@@ -25,7 +26,7 @@ export class QueryBuilder {
     };
 
     return bestFilms
-      .get()
+      .get({ source: apiSourcePrefered })
       .then((querySnapshot: any) => {
         const films: FilmInterface[] = [];
 
@@ -52,7 +53,7 @@ export class QueryBuilder {
     };
 
     return film
-      .get()
+      .get({ source: apiSourcePrefered })
       .then((querySnapshot: any) => {
         const films: FilmInterface[] = [];
 
@@ -79,7 +80,7 @@ export class QueryBuilder {
     };
 
     return film
-      .get()
+      .get({ source: apiSourcePrefered })
       .then((querySnapshot: any) => {
         const films: FilmInterface[] = [];
 
@@ -105,7 +106,7 @@ export class QueryBuilder {
       );
 
       return query
-        .get()
+        .get({ source: apiSourcePrefered })
         .then((querySnapshot: any) => {
           const films: FilmInterface[] = [];
 

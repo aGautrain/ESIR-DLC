@@ -1,5 +1,5 @@
 <template>
-<div class="card-container">
+<div class="film-thumbnail-container card-container">
     <div class="card" v-on:click="clickThumbnail">
       <template v-if="posterImage">
         <img class="card-img-top" v-bind:src="posterImage" alt="Movie thumbnail">

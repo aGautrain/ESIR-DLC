@@ -16,7 +16,7 @@
     <FilmSheet v-if="filmSelected" id="film-sheet" v-bind="filmSelected" />
 
     <div v-if="filmSelected" v-on:click="unselect" id="app-overlay"></div>
-    <!--<img src="https://robohash.org/filmotron3000" id="app-icon" alt="" title="" />-->
+    <!--<img src="https://robohash.org/filmotron3000.html" id="app-icon" alt="" title="" />-->
   </div>
 </template>
 
@@ -124,6 +124,15 @@ export default Vue.extend({
           }
           this.processing = false;
 
+          console.debug(
+            JSON.stringify({
+              action: "fetchFilms",
+              description: "fetched a selection of films matching query",
+              data: this.films,
+              query: query
+            })
+          );
+
           return this.films.length;
         });
       } else {
@@ -140,6 +149,14 @@ export default Vue.extend({
             this.filmsExposed.push(this.films[j]);
           }
           this.processing = false;
+
+          console.debug(
+            JSON.stringify({
+              action: "fetchFilms",
+              description: "fetched a preselection of films",
+              data: this.films
+            })
+          );
 
           return this.films.length;
         });
@@ -181,15 +198,27 @@ export default Vue.extend({
     },
     selectFilm: function(film: FilmInterface): void {
       this.filmSelected = film;
+      console.debug(
+        JSON.stringify({
+          action: "selectFilm",
+          description: "selected a single film to get informations about it",
+          data: film
+        })
+      );
     },
     unselect: function(): void {
       this.filmSelected = null;
+      console.debug(
+        JSON.stringify({
+          action: "unselectFilm",
+          description: "unselected film",
+          data: null
+        })
+      );
     }
   },
   created: function() {
-    this.fetchFilms("").then(number => {
-      console.log("Number of films fetched : ", number);
-    });
+    this.fetchFilms("");
     this.fetchTitles();
   }
 });
