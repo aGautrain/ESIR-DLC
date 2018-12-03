@@ -21,6 +21,10 @@ Working with Atom :
 - add _language-vue_ package for enabling single-file component highlighting
 - add _prettier-atom_ package for auto format of files
 
+## Using Jenkins
+
+We use a git webhook to notify jenkins of every commit and run a build.
+
 ## Understand app structure
 
 Application includes several Vue components. Each of these features :
