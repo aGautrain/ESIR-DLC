@@ -24,6 +24,7 @@ Working with Atom :
 ## Using Jenkins
 
 We use a git webhook to notify jenkins of every commit and run a build.
+Jenkins available on dev2.speed.yt:8080
 
 ## Understand app structure
 
