@@ -1,8 +1,11 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 
+let testsPassed = true;
+
 const elementSelectors = {
-  searchbar: "v-autocomplete-input",
+  searchbar: ".v-autocomplete-input",
+  searchbarSuggestionItems: ".searchbar-suggestion",
   filmThumbnails: ".film-thumbnail-container"
 };
 
@@ -11,6 +14,7 @@ let counter = 0; // used for screenshot indexing
 (async () => {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
+  await page.setViewport({ width: 1366, height: 1080 });
 
   const requests = {
     success: {},
@@ -53,16 +57,31 @@ let counter = 0; // used for screenshot indexing
 
   await test_filmsFetchedAtStart(page).catch(e => {
     console.error("FAILURE: filmsFetchedAtStart > ", e);
+    testsPassed = false;
   });
 
   await wait(3000);
+  await page.screenshot({ path: getCaptureFileName() });
 
+  await wait(1000);
+  await test_searchFilm(page).catch(e => {
+    console.error("FAILURE: searchFilm > ", e);
+    testsPassed = false;
+  });
   await page.screenshot({ path: getCaptureFileName() });
 
   test_noNetworkError(requests);
   writeDebugFile(requests);
 
   await browser.close();
+
+  if (testsPassed) {
+    console.log("\nReturning with exit code 0 (tests successful)");
+    process.exit(0);
+  } else {
+    console.log("\nReturning with exit code 1 (tests not successful)");
+    process.exit(1);
+  }
 })();
 
 // UTILS FUNCTIONS
@@ -99,7 +118,17 @@ async function test_searchFilm(page) {
   // 1°) selection
   const searchbar = await page.$(elementSelectors.searchbar);
   if (searchbar) {
-    return true;
+    await page.focus(elementSelectors.searchbar);
+    await page.type(elementSelectors.searchbar, "dark", { delay: 200 });
+
+    const suggestions = await page.$$(
+      elementSelectors.searchbarSuggestionItems
+    );
+    if (suggestions && suggestions.length > 0) {
+      return true;
+    } else {
+      throw new Error("Searchbar autocomplete not working");
+    }
   } else {
     throw new Error("No searchbar found");
   }
