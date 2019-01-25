@@ -127,6 +127,8 @@ async function test_searchFilm(page) {
     await page.focus(elementSelectors.searchbar);
     await page.type(elementSelectors.searchbar, "dark", { delay: 200 });
 
+    await wait(2000);
+
     const suggestions = await page.$$(
       elementSelectors.searchbarSuggestionItems
     );
