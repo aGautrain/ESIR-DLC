@@ -49,7 +49,8 @@ let counter = 0; // used for screenshot indexing
   });
 
   await page.goto("http://localhost:8081/").catch(e => {
-    console.log("Can't reach localhost:8081, promise failed", e);
+    console.log("FAILURE: reachingHost > ", e);
+    testsPassed = false;
   });
   await page.screenshot({ path: getCaptureFileName() });
 
