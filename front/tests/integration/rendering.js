@@ -54,25 +54,30 @@ let counter = 0; // used for screenshot indexing
   });
   await page.screenshot({ path: getCaptureFileName() });
 
-  await wait(10000);
+  if (testsPassed) {
+    await wait(10000);
+    await test_filmsFetchedAtStart(page).catch(e => {
+      console.error("FAILURE: filmsFetchedAtStart > ", e);
+      testsPassed = false;
+    });
+    await wait(3000);
+    await page.screenshot({ path: getCaptureFileName() });
+  }
 
-  await test_filmsFetchedAtStart(page).catch(e => {
-    console.error("FAILURE: filmsFetchedAtStart > ", e);
-    testsPassed = false;
-  });
 
-  await wait(3000);
-  await page.screenshot({ path: getCaptureFileName() });
+  if (testsPassed) {
+    await wait(1000);
+    await test_searchFilm(page).catch(e => {
+      console.error("FAILURE: searchFilm > ", e);
+      testsPassed = false;
+    });
+    await page.screenshot({ path: getCaptureFileName() });
+  }
 
-  await wait(1000);
-  await test_searchFilm(page).catch(e => {
-    console.error("FAILURE: searchFilm > ", e);
-    testsPassed = false;
-  });
-  await page.screenshot({ path: getCaptureFileName() });
-
-  test_noNetworkError(requests);
-  writeDebugFile(requests);
+  if (testsPassed) {
+    test_noNetworkError(requests);
+    writeDebugFile(requests);
+  }
 
   await browser.close();
 
