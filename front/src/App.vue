@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>Filmotron3000</h1>
+    <h1>Filmotron-3000</h1>
     <SearchBar v-on:filter-name-request="fetchFilms" v-on:filter-genre-request="filterGenres" v-bind:titles="filmsTitles" />
 
     <!-- FEATURE #1: Homepage showing a fullscreen carousel with latest films -->
